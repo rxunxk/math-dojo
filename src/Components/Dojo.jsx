@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { styled } from "styled-components";
 
 const DojoContainer = styled.div`
@@ -77,6 +77,7 @@ const Input = styled.input`
 
 let result;
 let opSign;
+let opsTimer;
 
 const Dojo = () => {
   const [ans, setAns] = useState("");
@@ -85,34 +86,42 @@ const Dojo = () => {
     op2: Math.floor(Math.random() * (100 - 1 + 1) + 1),
     operator: Math.floor(Math.random() * (3 - 1 + 1) + 1),
   });
+  const [result, setResult] = useState(0);
 
-  if (ops.operator === 1) {
-    result = ops.op1 + ops.op2;
-    console.log(result);
-    opSign = "+";
-  } else if (ops.operator === 2) {
-    result = ops.op1 - ops.op2;
-    console.log(result);
-    opSign = "-";
-  } else if (ops.operator === 3) {
-    result = ops.op1 * ops.op2;
-    console.log(result);
-    opSign = "x";
-  }
+  console.log(ops);
 
-  setTimeout(
-    () => {
-      setOps({
-        op1: Math.floor(Math.random() * (100 - 1 + 1) + 1),
-        op2: Math.floor(Math.random() * (100 - 1 + 1) + 1),
-        operator: Math.floor(Math.random() * (3 - 1 + 1) + 1),
-      });
-      setAns("");
-    },
-    ops.operator === 3 ? 5000 : 3000
-  );
+  useEffect(() => {
+    if (ops.operator === 1) {
+      setResult(ops.op1 + ops.op2);
+      console.log(result);
+      opSign = "+";
+    } else if (ops.operator === 2) {
+      setResult(ops.op1 - ops.op2);
+      console.log(result);
+      opSign = "-";
+    } else {
+      setResult(ops.op1 * ops.op2);
+      console.log(result);
+      opSign = "x";
+    }
+
+    opsTimer = setTimeout(
+      () => {
+        setOps({
+          op1: Math.floor(Math.random() * (100 - 1 + 1) + 1),
+          op2: Math.floor(Math.random() * (100 - 1 + 1) + 1),
+          operator: Math.floor(Math.random() * (3 - 1 + 1) + 1),
+        });
+        setAns("");
+        setResult(0);
+      },
+      ops.operator === 3 ? 5000 : 3000
+    );
+  }, [result]);
 
   if (result === parseInt(ans)) {
+    clearTimeout(opsTimer);
+
     setOps({
       op1: Math.floor(Math.random() * (100 - 1 + 1) + 1),
       op2: Math.floor(Math.random() * (100 - 1 + 1) + 1),
