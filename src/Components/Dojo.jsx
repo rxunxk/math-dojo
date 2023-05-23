@@ -74,8 +74,9 @@ const Input = styled.input`
     margin: 0;
   }
 `;
-
+//Global variable of timer so I dont have to worry about re initialization during re render
 let opsTimer;
+//Same as the above. used to store the result of the math operation.
 let result;
 
 setInterval(() => {
@@ -89,7 +90,9 @@ const Dojo = () => {
     op2: 3,
     operator: 1,
   });
+  //state to trigger useState upon correct answer
   const [change, setChange] = useState(true);
+  //Array of symbols to be used to assign the corresponding Signs of +, - & *
   const characters = ["+", "-", "x"];
 
   useEffect(() => {
