@@ -75,34 +75,33 @@ const Input = styled.input`
   }
 `;
 
-let result;
-let opSign;
 let opsTimer;
+let result;
+
+setInterval(() => {
+  console.log("-------");
+}, 1000);
 
 const Dojo = () => {
   const [ans, setAns] = useState("");
   const [ops, setOps] = useState({
-    op1: Math.floor(Math.random() * (100 - 1 + 1) + 1),
-    op2: Math.floor(Math.random() * (100 - 1 + 1) + 1),
-    operator: Math.floor(Math.random() * (3 - 1 + 1) + 1),
+    op1: 2,
+    op2: 3,
+    operator: 1,
   });
-  const [result, setResult] = useState(0);
-
-  console.log(ops);
+  const [change, setChange] = useState(true);
+  const characters = ["+", "-", "x"];
 
   useEffect(() => {
     if (ops.operator === 1) {
-      setResult(ops.op1 + ops.op2);
+      result = ops.op1 + ops.op2;
       console.log(result);
-      opSign = "+";
     } else if (ops.operator === 2) {
-      setResult(ops.op1 - ops.op2);
+      result = ops.op1 - ops.op2;
       console.log(result);
-      opSign = "-";
     } else {
-      setResult(ops.op1 * ops.op2);
+      result = ops.op1 * ops.op2;
       console.log(result);
-      opSign = "x";
     }
 
     opsTimer = setTimeout(
@@ -113,26 +112,26 @@ const Dojo = () => {
           operator: Math.floor(Math.random() * (3 - 1 + 1) + 1),
         });
         setAns("");
-        setResult(0);
+        setChange(!change);
       },
       ops.operator === 3 ? 5000 : 3000
     );
-  }, [result]);
-
-  if (result === parseInt(ans)) {
-    clearTimeout(opsTimer);
-
-    setOps({
-      op1: Math.floor(Math.random() * (100 - 1 + 1) + 1),
-      op2: Math.floor(Math.random() * (100 - 1 + 1) + 1),
-      operator: Math.floor(Math.random() * (3 - 1 + 1) + 1),
-    });
-    setAns("");
-  }
-  // const characters = ["+", "-", "x"]; /*unique way to choose random characters*/
+  }, [change]);
 
   const inputHandler = (e) => {
-    setAns(e.target.value);
+    if (result === parseInt(e.target.value)) {
+      console.log("correct answer!");
+      clearTimeout(opsTimer);
+      setOps({
+        op1: Math.floor(Math.random() * (100 - 1 + 1) + 1),
+        op2: Math.floor(Math.random() * (100 - 1 + 1) + 1),
+        operator: Math.floor(Math.random() * (3 - 1 + 1) + 1),
+      });
+      setAns("");
+      setChange(!change);
+    } else {
+      setAns(e.target.value);
+    }
   };
 
   return (
@@ -151,7 +150,7 @@ const Dojo = () => {
           }}
         >
           <Operand>{ops.op1}</Operand>
-          <Operator>{opSign}</Operator>
+          <Operator>{characters[ops.operator - 1]}</Operator>
           <Operand>{ops.op2}</Operand>
         </div>
         <Input type="number" value={ans} onChange={inputHandler} />
