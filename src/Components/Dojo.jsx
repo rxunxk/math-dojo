@@ -85,6 +85,8 @@ let result;
 //Array of symbols to be used to assign the corresponding Signs of +, - & *
 const characters = ["+", "-", "x"];
 
+let tempTimeCount;
+
 const Dojo = () => {
   const [ans, setAns] = useState("");
   const [ops, setOps] = useState({
@@ -98,12 +100,13 @@ const Dojo = () => {
   const [width, setWidth] = useState(100);
   const [timeCount, setTimeCount] = useState(0);
 
-  // setTimeCount(ops.operator === 3 ? 5 : 3);
+  useEffect(() => {
+    setTimeCount(ops.operator === 3 ? 5 : 3);
+  }, [change]);
 
   useEffect(() => {
     let timer;
     if (ops.operator === 3) {
-      setTimeCount(5);
       timer = setTimeout(() => {
         if (width === 0) {
           setWidth(0);
@@ -114,7 +117,6 @@ const Dojo = () => {
         }
       }, 1000);
     } else {
-      setTimeCount(3);
       timer = setTimeout(() => {
         if (width === 34) {
           setWidth(0);
