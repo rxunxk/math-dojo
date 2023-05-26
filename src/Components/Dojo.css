@@ -10,7 +10,7 @@
 .progress-bar {
   margin: 8px;
   height: 1rem;
-  width: 0%;
+  width: 100%;
   background-color: white;
   border-radius: 2px;
   transition: 0.3s;

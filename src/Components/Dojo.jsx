@@ -80,10 +80,8 @@ const Input = styled.input`
 
 //Global variable of timer so I dont have to worry about re initialization during re render
 let opsTimer;
-let scoreInterval;
 //Same as the above. used to store the result of the math operation.
 let result;
-
 //Array of symbols to be used to assign the corresponding Signs of +, - & *
 const characters = ["+", "-", "x"];
 
@@ -96,8 +94,46 @@ const Dojo = () => {
   });
   //state to trigger useState upon correct answer
   const [change, setChange] = useState(true);
-  const [scoreTimer, setScoreTimer] = useState(0);
-  const [barWidth, setBarWidth] = useState(100);
+
+  const [width, setWidth] = useState(100);
+  const [timeCount, setTimeCount] = useState(0);
+
+  // setTimeCount(ops.operator === 3 ? 5 : 3);
+
+  useEffect(() => {
+    let timer;
+    if (ops.operator === 3) {
+      setTimeCount(5);
+      timer = setTimeout(() => {
+        if (width === 0) {
+          setWidth(0);
+          setTimeCount(0);
+        } else {
+          setWidth(width - 20);
+          setTimeCount(timeCount - 1);
+        }
+      }, 1000);
+    } else {
+      setTimeCount(3);
+      timer = setTimeout(() => {
+        if (width === 34) {
+          setWidth(0);
+          setTimeCount(0);
+        } else if (width > 0) {
+          setWidth(width - 33);
+          setTimeCount(timeCount - 1);
+        }
+      }, 1000);
+    }
+
+    if (width === 0) {
+      clearTimeout(timer);
+    }
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [width, timeCount]);
 
   useEffect(() => {
     if (ops.operator === 1) {
@@ -111,29 +147,8 @@ const Dojo = () => {
       console.log(result);
     }
 
-    if (ops.operator === 1 || ops.operator === 2) {
-      setScoreTimer(3);
-      scoreInterval = setInterval(() => {
-        if (barWidth < 99) {
-          setBarWidth(barWidth - 33);
-          setScoreTimer((timer) => timer - 1);
-        }
-      }, 1000);
-    } else {
-      setScoreTimer(5);
-      scoreInterval = setInterval(() => {
-        console.log("multiplication time");
-        if (barWidth < 100) {
-          setBarWidth(barWidth - 20);
-          setScoreTimer((timer) => timer - 1);
-        }
-      }, 1000);
-    }
-
     opsTimer = setTimeout(
       () => {
-        clearInterval(scoreInterval);
-        setBarWidth(0);
         setOps({
           op1: Math.floor(Math.random() * (100 - 1 + 1) + 1),
           op2: Math.floor(Math.random() * (100 - 1 + 1) + 1),
@@ -141,12 +156,14 @@ const Dojo = () => {
         });
         setAns("");
         setChange(!change);
+        setWidth(100);
+        setTimeCount(0);
       },
-      ops.operator === 3 ? 5100 : 3100
+      ops.operator === 3 ? 5500 : 3500
     );
 
     return () => {
-      clearInterval(scoreInterval);
+      clearTimeout(opsTimer);
     };
   }, [change]);
 
@@ -154,8 +171,6 @@ const Dojo = () => {
     if (result === parseInt(e.target.value)) {
       console.log("correct answer!");
       clearTimeout(opsTimer);
-      clearInterval(scoreInterval);
-      setBarWidth(0);
       setOps({
         op1: Math.floor(Math.random() * (100 - 1 + 1) + 1),
         op2: Math.floor(Math.random() * (100 - 1 + 1) + 1),
@@ -163,6 +178,7 @@ const Dojo = () => {
       });
       setAns("");
       setChange(!change);
+      setWidth(100);
     } else {
       setAns(e.target.value);
     }
@@ -170,14 +186,13 @@ const Dojo = () => {
 
   return (
     <DojoContainer>
-      {console.log("scoreTimer: " + scoreTimer)}
       <Navbar>Math Dojo</Navbar>
       <Arena>
         <Score>
           <ScoreChip>Score1</ScoreChip>
           <div className="progress-bar-container">
-            <div className="progress-bar" style={{ width: `${barWidth}%` }}>
-              {`${scoreTimer} s`}
+            <div className="progress-bar" style={{ width: `${width}%` }}>
+              {`${timeCount} s`}
             </div>
           </div>
           <ScoreChip>Score2</ScoreChip>
