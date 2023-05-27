@@ -85,8 +85,6 @@ let result;
 //Array of symbols to be used to assign the corresponding Signs of +, - & *
 const characters = ["+", "-", "x"];
 
-let tempTimeCount;
-
 const Dojo = () => {
   const [ans, setAns] = useState("");
   const [ops, setOps] = useState({
@@ -194,7 +192,14 @@ const Dojo = () => {
           <ScoreChip>Score1</ScoreChip>
           <div className="progress-bar-container">
             <div className="progress-bar" style={{ width: `${width}%` }}>
-              {`${timeCount} s`}
+              <div
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%,-50%)",
+                }}
+              >{`${timeCount} s`}</div>
             </div>
           </div>
           <ScoreChip>Score2</ScoreChip>
